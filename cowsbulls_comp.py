@@ -1,5 +1,4 @@
 import random
-#from itertools import combinations
 
 #generate list of potential answers
 def gen_choices():
