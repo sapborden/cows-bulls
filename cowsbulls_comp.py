@@ -56,7 +56,6 @@ def start():
 
 #play the game
 start()
-print(len(choices))
 while int(cows) != 4: 
     print("Guess #", count, ":",guess)
     print("Cows:")
