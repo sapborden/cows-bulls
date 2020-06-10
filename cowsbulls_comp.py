@@ -46,30 +46,26 @@ def narrowing(cows,bulls, guess):
         choices_temp1.append(choice)
     return(choices_temp1)
 
-#begin or reset the game
-def start():
-    global choices, guess, count, cows
+#play the game
+while True:
     choices = gen_choices()
     guess = random.choice(choices)
     count = 1
     cows = 0
-
-#play the game
-start()
-while int(cows) != 4: 
-    print("Guess #", count, ":",guess)
-    print("Cows:")
-    cows = input_ans()
-    if cows == 4:
-        continue
-    print("Bulls:")
-    bulls = input_ans()
-    choices = narrowing(cows, bulls, guess)
-    if (len(choices) == 0 or (cows + bulls > 4) or (cows == 3 and bulls == 1)):
-        print("You have entered the wrong number of bulls or cows somewhere. Start again.")
-        start()
-        continue
-    guess = random.choice(choices)
-    count = count + 1
-else:
-    print("CORRECT!")
+    while int(cows) != 4: 
+        print("Guess #", count, ":",guess)
+        print("Cows:")
+        cows = input_ans()
+        if cows == 4:
+            continue
+        print("Bulls:")
+        bulls = input_ans()
+        choices = narrowing(cows, bulls, guess)
+        if (len(choices) == 0 or (cows + bulls > 4) or (cows == 3 and bulls == 1)):
+            print("You have entered the wrong number of bulls or cows somewhere. Start again.")
+            break
+        guess = random.choice(choices)
+        count = count + 1
+    else:
+        print("GUESS IS CORRECT!")
+        break
