@@ -9,6 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   
     <title>{% block title %}{% endblock %}</title>
+    <link rel='stylesheet' href="{% static 'website/style.css' %}">
     <link rel='stylesheet' href="{% static 'website/board.css' %}">
     <link rel='stylesheet' href="{% static 'website/bootstrap.min.css' %}">
 </head>
@@ -30,7 +31,7 @@
                 <a class="nav-link" href="{% url 'diaries' %}" style='color:black'>QUARANTINE DIARIES</a>
               </li>
               <li>
-                <a class="nav-link" href="{% url 'game' %}" style="color:black">GAME</a>
+                <a class="nav-link" href="{% url 'game_start' %}" style="color:black">GAME</a>
               </li>
             </ul>
           </div>
@@ -45,7 +46,7 @@
     </div>
   </div>
 
-  <div id="container" class="clearfix" style="background:inherit;"></div>
+  <div class="container" style="background:inherit;"></div>
     
     {% block content %}
     {% endblock %}

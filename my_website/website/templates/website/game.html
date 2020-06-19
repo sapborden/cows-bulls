@@ -5,16 +5,7 @@
 {% block content %}
 
 <h1>Play against the computer.</h1>
-<p>Comp will try to guess your 4-digit number. Click here when ready.</p>
+<p>Comp will try to guess your 4-digit number. Click <a href="{% url 'play_game' %}">here</a> when ready.</p>
 
-<p>Computer's {{count}} guess is {{guess}}</p>
-
-<form method="POST">
-    <table>
-        {{form}}
-    </table>
-    {% csrf_token %}
-    <button type="submit">Enter</button>
-</form>
 
 {% endblock %}

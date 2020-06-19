@@ -13,16 +13,18 @@ def welcome(request):
 
 GuessForm = modelform_factory(Guess, exclude=[])
 
-def game(request):
+def game_start(request):
+    return render(request, "website/game.html")
+
+def play_game(request):
     if request.method == "POST":
         form = GuessForm(request.POST)
         if form.is_valid():
             form.save()
-            
-            return redirect("game")
+            return redirect("play_game")
     else:
         form = GuessForm()
-    return render(request, "website/game.html", {"form": form, "guess": guess(gen_choices())})
+    return render(request, "website/play_game.html", {"form": form, "guess": guess(gen_choices())})
 
 def diaries(request):
     return render(request, "website/DIARIES.html")
