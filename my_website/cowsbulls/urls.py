@@ -1,7 +1,9 @@
-from django.urls import path
+from django.conf.urls import url, include
 
-from . import views
+from .views import begin_game, rules, play_game
 
 urlpatterns = [
-    path('start_game', views.start_game, name="start"),
+    url('rules', rules, name="rules"),
+    url('begin', begin_game, name="cowsbulls_begin"),
+    url('play/(?P<id>\d+)/$', play_game, name="cowsbulls_play")
 ]

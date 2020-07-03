@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Begin game
+{% endblock %}
+
+{% block content %}
+<!-- 
+    1. Computer's guess is: 
+    2. Cows:
+    3. Bulls:
+    4. Submit
+-->
+<p>The computer's {{ count }} guess is: {{ game.guess }} </p>
+
+<form method="POST" action="{% url 'cowsbulls_play' id=game.id %}">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Enter</button>
+</form>
+
+
+
+{% endblock %}
