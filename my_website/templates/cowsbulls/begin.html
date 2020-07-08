@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Begin game
@@ -6,13 +7,17 @@ Begin game
 
 {% block content %}
 
+<div style='padding-left:50px'>
 <p>The computer's {{ count }} guess is: {{ game.guess }} </p>
+</div>
 
-<form method="POST" action="{% url 'cowsbulls_play' id=game.id %}">
+<div align='center'>
+<form method="POST" action="{% url 'cowsbulls_play' id=game.id %}" class='form_centre'>
         {% csrf_token %}
-        {{ form }}
+        {{ form | crispy }}
         <button type="submit">Enter</button>
 </form>
+</div>
 
 
 
