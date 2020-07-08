@@ -6,8 +6,9 @@ from django.core.validators import int_list_validator
 class Game(models.Model):
     cows = models.CharField(max_length=1)
     bulls = models.CharField(max_length=1)
-    guess = models.CharField(max_length=4, editable=False)
-    choices = models.CharField(validators=[int_list_validator],max_length=20000, editable=False)
+    guess = models.CharField(max_length=4)
+    choices = models.CharField(validators=[int_list_validator],max_length=20000)
+    is_over = models.BooleanField(default=False, editable=False)
 
     def get_absolute_url(self):
         return reverse('gameplay_detail', args={self.id})
@@ -33,13 +34,14 @@ class Game(models.Model):
         choices = choices.split(",")
         return choices
     
-#returns next guess
-    def turn(self, cows, bulls):
+#updates choices and guess
+    def turn(self, cows, bulls, guess):
         self.cows = cows
         self.bulls = bulls
+        self.guess = guess 
 
         if self.cows == '4':
-            pass
+            self.is_over=True
         else:
             choices_temp = []
             choices = self._convert_choices(self.choices)
@@ -48,7 +50,7 @@ class Game(models.Model):
                 for i in range(0,4):
                     if choice[i] == self.guess[i]:
                         toll = toll + 1
-                if toll != self.cows:
+                if str(toll) != self.cows:
                     continue
                 choices_temp.append(choice)
             choices_temp1 = []
@@ -59,11 +61,10 @@ class Game(models.Model):
                         if i !=j:
                             if choice[i] == self.guess[j]:
                                 toll = toll + 1
-                if toll != self.bulls:
+                if str(toll) != self.bulls:
                     continue
                 choices_temp1.append(choice)
             if len(choices_temp1) == 0:
                 pass
             self.choices = choices_temp1
             self.guess = random.choice(self.choices)
-            return self.guess

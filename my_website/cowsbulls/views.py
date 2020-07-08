@@ -9,11 +9,11 @@ def rules(request):
     return render(request, 'cowsbulls/rules.html')
 
 def begin_game(request):
+    form=GameForm()
     game = Game.objects.create(
         choices = Game.gen_choices(Game),
         guess = random.choice(Game.gen_choices(Game)),
     )
-    form=GameForm()
     return render(request, 'cowsbulls/begin.html', {'game': game, 'form': form})
 
 def play_game(request, id):
@@ -21,9 +21,18 @@ def play_game(request, id):
     if request.method == "POST":
         form = GameForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('cowsbulls_play', id)
+            next_guess = form.save(commit=False)
+            next_guess.choices, next_guess.guess = game.choices, game.guess
+            next_guess.save() 
+            return redirect('cowsbulls_play', next_guess.id)
     else:
-        form = GameForm()
-#        guess = game.turn(game.cows, game.bulls)
-        return render(request, 'cowsbulls/begin.html', {'form': form, 'game':game})
+        game.turn(game.cows, game.bulls, game.guess)
+        game.save()
+        if game.is_over:
+            return redirect('cowsbulls_gameover') 
+        else: 
+            form=GameForm()
+            return render(request, 'cowsbulls/begin.html', {'form': form, 'game':game, 'choices': game.choices})
+
+def game_over(request):
+    return render(request, 'cowsbulls/game_over.html')
