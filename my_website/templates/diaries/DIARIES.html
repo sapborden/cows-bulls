@@ -3,11 +3,17 @@
 {% block title %}Stef Borden{% endblock %}
 
 {% block content %}
+
+<div class="text-center">
+<em>”The world must be all fucked up...when men travel first class and literature goes as freight.”</em>
+</div>
+
 <div class='row'>     
+
   <div class='column diaries'>
       <img class = 'entry' src="../../static/website/images/remedios.jpg">
     <div class='hover'>
-        <div class='text'>ONE HUNDERED YEARS OF SOLITUDE</div>
+        <a href="{% url 'book_detail' %}"><div class='text'>ONE HUNDERED YEARS OF SOLITUDE</div></a> 
     </div>
   </div>
 
@@ -19,12 +25,37 @@
   </div>
 
 
-<div class='column diaries'>
+  <div class='column diaries'>
     <img class='entry' src="../../static/website/images/suitable.jpg">
     <div class='hover'>
         <div class='text'>A SUITABLE BOY</div>
     </div>
+  </div>
+
 </div>
+
+<div class=row>
+
+  <div class='column diaries'>
+      <img class='entry' src="../../static/website/images/wrath.jpg">
+      <div class='hover'>
+          <div class='text'>THE GRAPES OF WRATH</div>
+      </div>
+  </div>
+
+  <div class='column diaries'>
+      <img class='entry' src="../../static/website/images/catch.jpg">
+      <div class='hover'>
+          <div class='text'>CATCH 22</div>
+      </div>
+  </div>
+
+  <div class='column diaries'>
+      <img class='entry' src="../../static/website/images/tiger.jpg">
+      <div class='hover'>
+          <div class='text'>THE WHITE TIGER</div>
+      </div>
+  </div>
 
 </div>
 
