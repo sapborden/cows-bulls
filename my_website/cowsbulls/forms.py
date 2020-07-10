@@ -5,4 +5,4 @@ from .models import Game
 class GameForm(ModelForm):
     class Meta:
         model = Game
-        exclude = ['guess', 'choices']
+        exclude = ['guess', 'choices', 'count']

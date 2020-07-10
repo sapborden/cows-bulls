@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Error 
+{% endblock %}
+
+{% block content %}
+<div style='padding-left:50px; padding-top: 50px'>
+    <p>ERROR! You have inputed the wrong number of cows and bulls for one or more of the computer's guesses.</p>
+    <p>Here is the traceback: </p>
+</div>
+
+
+<div class='row' style='padding: 30px'>
+    <div class='column' style='padding: 60px'>
+        {% for game in games %}
+            {% if game.id != latest_id %}
+                <p>Guess: {{ game.guess }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class='column' style='padding: 60px'>
+        {% for game in games %}
+            {% if game.cows != '' %}
+                <p> Cows: {{ game.cows}}, Bulls: {{ game.bulls }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

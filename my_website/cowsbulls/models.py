@@ -9,6 +9,7 @@ class Game(models.Model):
     guess = models.CharField(max_length=4)
     choices = models.CharField(validators=[int_list_validator],max_length=20000)
     is_over = models.BooleanField(default=False, editable=False)
+    input_error = models.BooleanField(default=False, editable=False)
 
     def get_absolute_url(self):
         return reverse('gameplay_detail', args={self.id})
@@ -35,10 +36,9 @@ class Game(models.Model):
         return choices
     
 #updates choices and guess
-    def turn(self, cows, bulls, guess):
+    def turn(self, cows, bulls):
         self.cows = cows
         self.bulls = bulls
-        self.guess = guess 
 
         if self.cows == '4':
             self.is_over=True
@@ -65,6 +65,7 @@ class Game(models.Model):
                     continue
                 choices_temp1.append(choice)
             if len(choices_temp1) == 0:
-                pass
-            self.choices = choices_temp1
-            self.guess = random.choice(self.choices)
+                self.input_error = True
+            else:
+                self.choices = choices_temp1
+                self.guess = random.choice(self.choices)

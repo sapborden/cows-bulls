@@ -26,13 +26,20 @@ def play_game(request, id):
             next_guess.save() 
             return redirect('cowsbulls_play', next_guess.id)
     else:
-        game.turn(game.cows, game.bulls, game.guess)
+        game.turn(game.cows, game.bulls)
         game.save()
         if game.is_over:
             return redirect('cowsbulls_gameover') 
+        if game.input_error:
+            return redirect('cowsbulls_error_page', id)
         else: 
             form=GameForm()
             return render(request, 'cowsbulls/begin.html', {'form': form, 'game':game, 'choices': game.choices})
 
+def error_page(request, id):
+    games = Game.objects.all()
+    return render(request, 'cowsbulls/error_page.html', {'games':games, 'latest_id': id})
+
 def game_over(request):
+    Game.objects.all().delete()
     return render(request, 'cowsbulls/game_over.html')
