@@ -7,5 +7,6 @@ urlpatterns = [
     url('begin', begin_game, name="cowsbulls_begin"),
     url('play/(?P<id>\d+)/$', play_game, name="cowsbulls_play"),
     url('game_over', game_over, name="cowsbulls_gameover"),
-    url('error_page/(?P<id>\d+)/$', error_page, name="cowsbulls_error_page")
+    url('error_page/(?P<id>\d+)/$', error_page, name="cowsbulls_error_page"),
+    url('continue_game/(?P<id>\d+)/$', revert_game, name="cowsbulls_revert")
 ]

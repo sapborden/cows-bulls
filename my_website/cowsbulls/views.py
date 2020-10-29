@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import GameForm
 
-from .models import Game
+from .models import Game, PrevGuess
 import random
 
 
@@ -9,6 +9,8 @@ def rules(request):
     return render(request, 'cowsbulls/rules.html')
 
 def begin_game(request):
+    Game.objects.all().delete()
+    PrevGuess.objects.all().delete()
     form=GameForm()
     game = Game.objects.create(
         choices = Game.gen_choices(Game),
@@ -19,12 +21,16 @@ def begin_game(request):
 def play_game(request, id):
     game = get_object_or_404(Game, pk=id)
     if request.method == "POST":
-        form = GameForm(data=request.POST)
+        form = GameForm(request.POST, instance=game)
         if form.is_valid():
-            next_guess = form.save(commit=False)
-            next_guess.choices, next_guess.guess = game.choices, game.guess
-            next_guess.save() 
-            return redirect('cowsbulls_play', next_guess.id)
+            PrevGuess.objects.create(
+                cows = game.cows,
+                bulls = game.bulls,
+                guess = game.guess,
+                choices = game.choices
+            )
+            game.save() 
+            return redirect('cowsbulls_play', game.id)
     else:
         game.turn(game.cows, game.bulls)
         game.save()
@@ -37,9 +43,19 @@ def play_game(request, id):
             return render(request, 'cowsbulls/begin.html', {'form': form, 'game':game, 'choices': game.choices})
 
 def error_page(request, id):
-    games = Game.objects.all()
-    return render(request, 'cowsbulls/error_page.html', {'games':games, 'latest_id': id})
+    prev_guesses = PrevGuess.objects.all()
+    return render(request, 'cowsbulls/error_page.html', {'turns': prev_guesses})
+
+def revert_game(request, id):
+    game = Game.objects.get()
+    game.input_error=False
+    turn = PrevGuess.objects.all()[int(id)-1]
+    count = PrevGuess.objects.all().count()
+    game.choices, game.guess = turn.choices, turn.guess
+    game.save()
+    #delete the relevant PrevGuess objects 
+    form=GameForm()
+    return render(request, 'cowsbulls/begin.html', {'game': game, 'form': form})
 
 def game_over(request):
-    Game.objects.all().delete()
     return render(request, 'cowsbulls/game_over.html')

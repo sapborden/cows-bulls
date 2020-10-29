@@ -3,6 +3,12 @@ import random
 from django.contrib.auth.models import User
 from django.core.validators import int_list_validator
 
+class PrevGuess(models.Model):
+    cows = models.CharField(max_length=1)
+    bulls = models.CharField(max_length=1)
+    guess = models.CharField(max_length=4)
+    choices = models.CharField(validators=[int_list_validator],max_length=20000)
+
 class Game(models.Model):
     cows = models.CharField(max_length=1)
     bulls = models.CharField(max_length=1)
@@ -13,7 +19,7 @@ class Game(models.Model):
 
     def get_absolute_url(self):
         return reverse('gameplay_detail', args={self.id})
-        
+
     def gen_choices(self):
         self.choices = []
         for i in range(1,10):
@@ -27,7 +33,7 @@ class Game(models.Model):
                                     self.choices.append(guess)
         return self.choices
 
-    def _convert_choices(self,choices):
+    def _convert_list(self,choices):
         choices = choices.replace("'","")
         choices = choices.replace(" ","")
         choices = choices.strip("\[")
@@ -44,7 +50,7 @@ class Game(models.Model):
             self.is_over=True
         else:
             choices_temp = []
-            choices = self._convert_choices(self.choices)
+            choices = self._convert_list(self.choices)
             for choice in choices:
                 toll = 0
                 for i in range(0,4):
