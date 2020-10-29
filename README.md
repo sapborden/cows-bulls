@@ -1,1 +1,3 @@
-Cows and bulls game
+Cows and bulls game. 
+
+$ python manage.py runserver

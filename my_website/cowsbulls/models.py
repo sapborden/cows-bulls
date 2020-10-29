@@ -1,37 +1,77 @@
 from django.db import models
 import random
 from django.contrib.auth.models import User
+from django.core.validators import int_list_validator
 
-GAME_STATUS_CHOICES = (
-    ('F', 'First Player Turn'),
-    ('S', 'Second Player Turn'),
-    ('W', 'First player wins'),
-    ('L', 'Second player wins'),
-)
+class PrevGuess(models.Model):
+    cows = models.CharField(max_length=1)
+    bulls = models.CharField(max_length=1)
+    guess = models.CharField(max_length=4)
+    choices = models.CharField(validators=[int_list_validator],max_length=20000)
 
 class Game(models.Model):
-    first_player = models.ForeignKey(User, related_name="games_first_player", on_delete=models.CASCADE)
-    second_player = models.ForeignKey(User, related_name="games_second_player", on_delete=models.CASCADE)
-    start_time = models.DateTimeField(auto_now_add=True)
-    last_active = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=1, default='F', choices=GAME_STATUS_CHOICES)
-
-    def __str__(self):
-        return "{0} vs {1}".format(self.first_player,self.second_player)
-
-#table of choices
-class Choice(models.Model):
-
-    choice = models.CharField(max_length=4)
-
-class Guess(models.Model):
+    cows = models.CharField(max_length=1)
+    bulls = models.CharField(max_length=1)
     guess = models.CharField(max_length=4)
+    choices = models.CharField(validators=[int_list_validator],max_length=20000)
+    is_over = models.BooleanField(default=False, editable=False)
+    input_error = models.BooleanField(default=False, editable=False)
 
-class UserTurn(models.Model):
-    cows = models.IntegerField()
-    bulls = models.IntegerField()
-    choices = models.ForeignKey(Choice, on_delete=models.CASCADE)
-    guess = models.ForeignKey(Guess, on_delete=models.CASCADE)
-    count = models.IntegerField()
+    def get_absolute_url(self):
+        return reverse('gameplay_detail', args={self.id})
 
-    game=models.ForeignKey(Game, on_delete=models.CASCADE)
+    def gen_choices(self):
+        self.choices = []
+        for i in range(1,10):
+            for j in range(1,10):
+                if i != j:
+                    for k in range(1,10):
+                        if k not in [i,j]:
+                            for l in range(1,10):
+                                if l not in [i,j,k]:
+                                    guess = str(i)+str(j)+str(k)+str(l)
+                                    self.choices.append(guess)
+        return self.choices
+
+    def _convert_list(self,choices):
+        choices = choices.replace("'","")
+        choices = choices.replace(" ","")
+        choices = choices.strip("\[")
+        choices = choices.strip("\]")
+        choices = choices.split(",")
+        return choices
+    
+#updates choices and guess
+    def turn(self, cows, bulls):
+        self.cows = cows
+        self.bulls = bulls
+
+        if self.cows == '4':
+            self.is_over=True
+        else:
+            choices_temp = []
+            choices = self._convert_list(self.choices)
+            for choice in choices:
+                toll = 0
+                for i in range(0,4):
+                    if choice[i] == self.guess[i]:
+                        toll = toll + 1
+                if str(toll) != self.cows:
+                    continue
+                choices_temp.append(choice)
+            choices_temp1 = []
+            for choice in choices_temp:
+                toll = 0
+                for i in range(0,4):
+                    for j in range(0,4):
+                        if i !=j:
+                            if choice[i] == self.guess[j]:
+                                toll = toll + 1
+                if str(toll) != self.bulls:
+                    continue
+                choices_temp1.append(choice)
+            if len(choices_temp1) == 0:
+                self.input_error = True
+            else:
+                self.choices = choices_temp1
+                self.guess = random.choice(self.choices)

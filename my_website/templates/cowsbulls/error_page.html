@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Error 
+{% endblock %}
+
+{% block content %}
+<div style='padding-left:50px; padding-top: 50px'>
+    <p>ERROR! You have inputed the wrong number of cows and bulls for one or more of the computer's guesses.</p>
+    <p>Please select the entry that was incorrect. If there is more than one incorrect entry, please select the first one.</p>
+</div>
+
+
+<div class='row' style='padding: 30px'>
+    <ul class='column' style='padding: 60px'>
+        {% for turn in turns %}
+                <li><a href="{% url 'cowsbulls_revert' id=forloop.counter %}">Guess {{ forloop.counter }}: {{ turn.guess }}, Cows: {{ turn.cows }}, Bulls: {{ turn.bulls }}</a> </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock %}

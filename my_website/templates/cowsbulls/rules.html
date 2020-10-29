@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title%}
+Play Game
+{% endblock %}
+
+{% block content %}
+
+<h2>Cows and Bulls</h2>
+<h3>Rules of the game:</h3>
+<ul>
+    <li>Choose any 4-digit number.</li>
+        <ul><li>Your number cannot contain a 0, and cannot have any repeat digit. The computer will try to guess your number.</li></ul>
+    <li>If the computer guesses a digit in the correct place, the comp has a cow.</li>
+    <li>If the computer guesses a digit in your number, but in the incorrect place, the computer has a bull.</li>
+    <li>Enter the number of cows and bulls the computer's guess has.</li>
+    <li>The computer will make another guess.</li>
+    <li>This continues until the computer correctly guesses your number.</li>
+</ul>
+
+<p>Choose a number and click below when you are ready.</p>
+
+<a href="{% url 'cowsbulls_begin' %}">Play!</a>
+
+{% endblock %}
